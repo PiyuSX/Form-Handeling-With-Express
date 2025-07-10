@@ -1,20 +1,28 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 
 const App = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting, isSubmitted },
+    reset,
   } = useForm();
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const onSubmit = async (data) => {
-    let r = await fetch("http://localhost:3000/", {
+    setShowSuccess(false);
+    let r = await fetch("https://form-handeling-backend.onrender.com/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
+    if (r.ok) {
+      setShowSuccess(true);
+      reset();
+    }
   };
 
   return (
@@ -157,7 +165,7 @@ const App = () => {
             transition: "background 0.2s",
           }}
         />
-        {isSubmitted && (
+        {showSuccess && (
           <p
             style={{
               color: "#228b22",
@@ -167,7 +175,15 @@ const App = () => {
               fontFamily: "inherit",
             }}
           >
-            Form submitted successfully!
+            Your data is showing on{" "}
+            <a
+              href="https://form-handeling-backend.onrender.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#22223b", textDecoration: "underline" }}
+            >
+              https://form-handeling-backend.onrender.com/
+            </a>
           </p>
         )}
       </form>
